@@ -5,6 +5,7 @@ import com.ran.ams.repository.CategoryRepository;
 import com.ran.ams.request.CategoryCreateRequest;
 import com.ran.ams.request.CategoryUpdateRequest;
 import com.ran.ams.service.CategoryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -32,11 +34,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findById(int id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
-        }
-
-        return categoryRepository.findById(id).orElse(null);
+        return categoryRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -53,8 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void update(int id, CategoryUpdateRequest request) {
-        Category category = categoryRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+        Category category = findById(id);
 
         category.setName(request.getName());
         categoryRepository.save(category);

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * @since 09/12/2024
  **/
 
-public record CategoryDto(
+public record LocationDto(
         int id,
         String name,
         @JsonProperty("created_at")
