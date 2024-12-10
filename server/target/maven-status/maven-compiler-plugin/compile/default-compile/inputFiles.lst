@@ -1,4 +1,5 @@
 /Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/AmsApplication.java
+/Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/config/SwaggerConfig.java
 /Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/controller/CategoryController.java
 /Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/dto/CategoryDto.java
 /Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/entity/BaseEntity.java
@@ -9,6 +10,7 @@
 /Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/request/CategoryCreateRequest.java
 /Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/request/CategoryUpdateRequest.java
 /Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/response/ValidationError.java
+/Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/response/WebDataResponse.java
 /Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/response/WebResponse.java
 /Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/service/CategoryService.java
 /Users/riyanamanda/Riyan/Apps/ams/server/src/main/java/com/ran/ams/service/implement/CategoryServiceImpl.java
