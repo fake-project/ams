@@ -32,7 +32,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findById(int id) {
-        return categoryRepository.findById(id).get();
+        if (!categoryRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
+        }
+
+        return categoryRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -49,9 +53,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void update(int id, CategoryUpdateRequest request) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
-        });
+        Category category = categoryRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 
         category.setName(request.getName());
         categoryRepository.save(category);
