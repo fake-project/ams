@@ -1,7 +1,7 @@
 package com.ran.ams.controller;
 
-import com.ran.ams.dto.CategoryDto;
 import com.ran.ams.entity.Category;
+import com.ran.ams.mapper.CategoryMapper;
 import com.ran.ams.request.CategoryCreateRequest;
 import com.ran.ams.request.CategoryUpdateRequest;
 import com.ran.ams.response.WebDataResponse;
@@ -9,13 +9,11 @@ import com.ran.ams.response.WebResponse;
 import com.ran.ams.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +29,7 @@ import java.util.stream.Collectors;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -43,12 +42,7 @@ public class CategoryController {
                         .code(HttpStatus.OK.value())
                         .status(HttpStatus.OK.getReasonPhrase())
                         .data(categories.stream()
-                                .map(category -> new CategoryDto(
-                                        category.getId(),
-                                        category.getName(),
-                                        category.getCreatedAt(),
-                                        category.getUpdatedAt()
-                                ))
+                                .map(categoryMapper)
                                 .collect(Collectors.toList()))
                         .build()
         );
@@ -79,12 +73,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(WebDataResponse.builder()
                         .code(HttpStatus.OK.value())
                         .status(HttpStatus.OK.getReasonPhrase())
-                        .data(new CategoryDto(
-                                category.getId(),
-                                category.getName(),
-                                category.getCreatedAt(),
-                                category.getUpdatedAt()
-                        ))
+                        .data(categoryMapper.apply(category))
                 .build());
     }
 

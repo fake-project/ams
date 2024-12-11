@@ -1,7 +1,7 @@
 package com.ran.ams.controller;
 
-import com.ran.ams.dto.LocationDto;
 import com.ran.ams.entity.Location;
+import com.ran.ams.mapper.LocationMapper;
 import com.ran.ams.request.LocationCreateRequest;
 import com.ran.ams.request.LocationUpdateRequest;
 import com.ran.ams.response.WebDataResponse;
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 public class LocationController {
 
     private final LocationService locationService;
+    private final LocationMapper locationMapper;
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -41,12 +42,7 @@ public class LocationController {
                         .code(HttpStatus.OK.value())
                         .status(HttpStatus.OK.getReasonPhrase())
                         .data(locations.stream()
-                                .map(location -> new LocationDto(
-                                        location.getId(),
-                                        location.getName(),
-                                        location.getCreatedAt(),
-                                        location.getUpdatedAt()
-                                ))
+                                .map(locationMapper)
                                 .collect(Collectors.toList()))
                         .build());
     }
@@ -77,12 +73,7 @@ public class LocationController {
                 WebDataResponse.builder()
                         .code(HttpStatus.OK.value())
                         .status(HttpStatus.OK.getReasonPhrase())
-                        .data(new LocationDto(
-                                location.getId(),
-                                location.getName(),
-                                location.getCreatedAt(),
-                                location.getUpdatedAt()
-                        ))
+                        .data(locationMapper.apply(location))
                         .build()
         );
     }
