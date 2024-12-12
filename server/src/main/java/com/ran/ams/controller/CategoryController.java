@@ -9,6 +9,7 @@ import com.ran.ams.response.WebResponse;
 import com.ran.ams.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,18 +33,17 @@ public class CategoryController {
     private final CategoryMapper categoryMapper;
 
     @GetMapping(
+            path = "/{offset}/{limit}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findAll() {
-        List<Category> categories = categoryService.findAll();
+    public ResponseEntity<WebDataResponse> findAll(@PathVariable int offset, @PathVariable int limit) {
+        Page<Category> categories = categoryService.findAll(offset, limit);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 WebDataResponse.builder()
                         .code(HttpStatus.OK.value())
                         .status(HttpStatus.OK.getReasonPhrase())
-                        .data(categories.stream()
-                                .map(categoryMapper)
-                                .collect(Collectors.toList()))
+                        .data(categories.map(categoryMapper))
                         .build()
         );
     }
@@ -67,7 +67,7 @@ public class CategoryController {
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findById(@PathVariable("id") int id){
+    public ResponseEntity<WebDataResponse> findById(@PathVariable int id){
         Category category = categoryService.findById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(WebDataResponse.builder()
@@ -82,7 +82,7 @@ public class CategoryController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebResponse> update(@Valid @PathVariable("id") int id, @RequestBody CategoryUpdateRequest request) {
+    public ResponseEntity<WebResponse> update(@Valid @PathVariable int id, @RequestBody CategoryUpdateRequest request) {
         categoryService.update(id, request);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(WebResponse.builder()

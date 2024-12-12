@@ -3,6 +3,7 @@ package com.ran.ams.service;
 import com.ran.ams.entity.Category;
 import com.ran.ams.request.CategoryCreateRequest;
 import com.ran.ams.request.CategoryUpdateRequest;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,9 +14,9 @@ import java.util.List;
  **/
 
 public interface CategoryService {
-    List<Category> findAll();
-    Category findById(int id);
+    Page<Category> findAll(int offset, int limit);
     void create(CategoryCreateRequest request);
+    Category findById(int id);
     void update(int id, CategoryUpdateRequest request);
     void delete(int id);
 }

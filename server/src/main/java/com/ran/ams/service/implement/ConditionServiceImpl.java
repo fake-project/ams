@@ -6,6 +6,9 @@ import com.ran.ams.request.ConditionCreateRequest;
 import com.ran.ams.request.ConditionUpdateRequest;
 import com.ran.ams.service.ConditionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,16 +24,19 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ConditionServiceImpl implements ConditionService {
+
     private final ConditionRepository conditionRepository;
 
     @Override
-    public List<Condition> findAll() {
-        return conditionRepository.findAll();
+    public Page<Condition> findAll(int offset, int limit) {
+        return conditionRepository.findAll(PageRequest
+                .of(offset, limit, Sort.by(Sort.Direction.DESC, "createdAt"))
+        );
     }
 
     @Override
-    public void save(ConditionCreateRequest request) {
-        if (conditionRepository.existsByName(request.getName())){
+    public void create(ConditionCreateRequest request) {
+        if (conditionRepository.existsByName(request.getName())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Condition already exists");
         }
 
@@ -42,7 +48,7 @@ public class ConditionServiceImpl implements ConditionService {
 
     @Override
     public Condition findById(int id) {
-        if (!conditionRepository.existsById(id)){
+        if (!conditionRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Condition not found");
         }
 
@@ -60,7 +66,7 @@ public class ConditionServiceImpl implements ConditionService {
 
     @Override
     public void delete(int id) {
-        if (!conditionRepository.existsById(id)){
+        if (!conditionRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Condition not found");
         }
 

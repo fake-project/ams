@@ -9,6 +9,7 @@ import com.ran.ams.response.WebResponse;
 import com.ran.ams.service.ConditionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,19 +33,17 @@ public class ConditionController {
     private final ConditionMapper conditionMapper;
 
     @GetMapping(
+            path = "/{offset}/{limit}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findAll() {
-        List<Condition> conditions = conditionService.findAll();
+    public ResponseEntity<WebDataResponse> findAll(@PathVariable int offset, @PathVariable int limit) {
+        Page<Condition> conditions = conditionService.findAll(offset, limit);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 WebDataResponse.builder()
                         .code(HttpStatus.OK.value())
                         .status(HttpStatus.OK.getReasonPhrase())
-                        .data(conditions.stream()
-                                .map(conditionMapper)
-                                .collect(Collectors.toList())
-                        )
+                        .data(conditions.map(conditionMapper))
                         .build()
         );
     }
@@ -54,7 +53,7 @@ public class ConditionController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<WebResponse> create(@Valid @RequestBody ConditionCreateRequest request) {
-        conditionService.save(request);
+        conditionService.create(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 WebResponse.builder()
@@ -69,7 +68,7 @@ public class ConditionController {
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findById(@PathVariable("id") int id) {
+    public ResponseEntity<WebDataResponse> findById(@PathVariable int id) {
         Condition condition = conditionService.findById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -86,7 +85,7 @@ public class ConditionController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebResponse> update(@PathVariable("id") int id, @Valid @RequestBody ConditionUpdateRequest request) {
+    public ResponseEntity<WebResponse> update(@PathVariable int id, @Valid @RequestBody ConditionUpdateRequest request) {
         conditionService.update(id, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -102,7 +101,7 @@ public class ConditionController {
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebResponse> delete(@PathVariable("id") int id) {
+    public ResponseEntity<WebResponse> delete(@PathVariable int id) {
         conditionService.delete(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(

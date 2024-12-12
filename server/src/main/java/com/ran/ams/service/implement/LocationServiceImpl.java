@@ -5,13 +5,13 @@ import com.ran.ams.repository.LocationRepository;
 import com.ran.ams.request.LocationCreateRequest;
 import com.ran.ams.request.LocationUpdateRequest;
 import com.ran.ams.service.LocationService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 /**
  * @author Riyan Amanda
@@ -21,14 +21,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
 
     @Override
-    public List<Location> findAll() {
-        return locationRepository.findAll();
+    public Page<Location> findAll(int offset, int limit) {
+        return locationRepository.findAll(PageRequest
+                .of(offset, limit, Sort.by(Sort.Direction.DESC, "createdAt"))
+        );
     }
 
     @Override

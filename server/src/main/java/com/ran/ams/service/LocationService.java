@@ -3,6 +3,7 @@ package com.ran.ams.service;
 import com.ran.ams.entity.Location;
 import com.ran.ams.request.LocationCreateRequest;
 import com.ran.ams.request.LocationUpdateRequest;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  **/
 
 public interface LocationService {
-    List<Location> findAll();
+    Page<Location> findAll(int offset, int limit);
     void create(LocationCreateRequest request);
     Location findById(int id);
     void update(int id, LocationUpdateRequest request);

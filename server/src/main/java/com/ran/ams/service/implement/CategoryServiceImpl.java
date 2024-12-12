@@ -5,14 +5,13 @@ import com.ran.ams.repository.CategoryRepository;
 import com.ran.ams.request.CategoryCreateRequest;
 import com.ran.ams.request.CategoryUpdateRequest;
 import com.ran.ams.service.CategoryService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 /**
  * @author Riyan Amanda
@@ -22,14 +21,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
     @Override
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public Page<Category> findAll(int offset, int limit) {
+        return categoryRepository.findAll(PageRequest
+                .of(offset, limit, Sort.by(Sort.Direction.DESC, "createdAt"))
+        );
     }
 
     @Override

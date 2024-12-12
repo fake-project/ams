@@ -9,6 +9,7 @@ import com.ran.ams.response.WebResponse;
 import com.ran.ams.service.LocationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,18 +33,17 @@ public class LocationController {
     private final LocationMapper locationMapper;
 
     @GetMapping(
+            path = "/{offset}/{limit}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findAll() {
-        List<Location> locations = locationService.findAll();
+    public ResponseEntity<WebDataResponse> findAll(@PathVariable int offset, @PathVariable int limit) {
+        Page<Location> locations = locationService.findAll(offset, limit);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 WebDataResponse.builder()
                         .code(HttpStatus.OK.value())
                         .status(HttpStatus.OK.getReasonPhrase())
-                        .data(locations.stream()
-                                .map(locationMapper)
-                                .collect(Collectors.toList()))
+                        .data(locations.map(locationMapper))
                         .build());
     }
 
@@ -66,7 +66,7 @@ public class LocationController {
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findById(@PathVariable("id") int id) {
+    public ResponseEntity<WebDataResponse> findById(@PathVariable int id) {
         Location location = locationService.findById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -83,7 +83,7 @@ public class LocationController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebResponse> update(@Valid @PathVariable("id") int id, @RequestBody LocationUpdateRequest request) {
+    public ResponseEntity<WebResponse> update(@Valid @PathVariable int id, @RequestBody LocationUpdateRequest request) {
         locationService.update(id, request);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(
@@ -99,7 +99,7 @@ public class LocationController {
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebResponse> delete(@PathVariable("id") int id) {
+    public ResponseEntity<WebResponse> delete(@PathVariable int id) {
         locationService.delete(id);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(

@@ -3,6 +3,7 @@ package com.ran.ams.service;
 import com.ran.ams.entity.Condition;
 import com.ran.ams.request.ConditionCreateRequest;
 import com.ran.ams.request.ConditionUpdateRequest;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,8 +14,8 @@ import java.util.List;
  **/
 
 public interface ConditionService {
-    List<Condition> findAll();
-    void save(ConditionCreateRequest request);
+    Page<Condition> findAll(int offset, int limit);
+    void create(ConditionCreateRequest request);
     Condition findById(int id);
     void update(int id, ConditionUpdateRequest request);
     void delete(int id);
