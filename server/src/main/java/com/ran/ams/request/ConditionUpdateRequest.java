@@ -4,10 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author Riyan Amanda
@@ -16,10 +14,9 @@ import lombok.NoArgsConstructor;
  **/
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class CategoryUpdateRequest {
+public class ConditionUpdateRequest {
+
     @NotNull(message = "Name is required")
     @NotBlank(message = "Name is required")
     @NotEmpty(message = "Name is required")
