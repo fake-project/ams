@@ -1,5 +1,6 @@
 package com.ran.ams.controller;
 
+import com.ran.ams.dto.PageableDto;
 import com.ran.ams.entity.Category;
 import com.ran.ams.mapper.CategoryMapper;
 import com.ran.ams.request.CategoryCreateRequest;
@@ -14,9 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Riyan Amanda
@@ -35,7 +33,7 @@ public class CategoryController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findAll(
+    public ResponseEntity<WebDataResponse<Object>> findAll(
             @RequestParam(value = "offset", defaultValue = "0") int offset,
             @RequestParam(value = "limit", defaultValue = "10") int limit
     ) {
@@ -45,7 +43,14 @@ public class CategoryController {
                 WebDataResponse.builder()
                         .code(HttpStatus.OK.value())
                         .status(HttpStatus.OK.getReasonPhrase())
-                        .data(categories.map(categoryMapper))
+                        .data(PageableDto.builder()
+                                .currentPage(offset)
+                                .perPage(limit)
+                                .isFirst(categories.isFirst())
+                                .isLast(categories.isLast())
+                                .total(categories.getTotalPages())
+                                .content(categories.getContent().stream().map(categoryMapper))
+                                .build())
                         .build()
         );
     }
@@ -69,13 +74,13 @@ public class CategoryController {
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findById(@PathVariable int id){
+    public ResponseEntity<WebDataResponse<Object>> findById(@PathVariable int id) {
         Category category = categoryService.findById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(WebDataResponse.builder()
-                        .code(HttpStatus.OK.value())
-                        .status(HttpStatus.OK.getReasonPhrase())
-                        .data(categoryMapper.apply(category))
+                .code(HttpStatus.OK.value())
+                .status(HttpStatus.OK.getReasonPhrase())
+                .data(categoryMapper.apply(category))
                 .build());
     }
 
@@ -88,23 +93,23 @@ public class CategoryController {
         categoryService.update(id, request);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(WebResponse.builder()
-                        .code(HttpStatus.ACCEPTED.value())
-                        .status(HttpStatus.ACCEPTED.getReasonPhrase())
-                        .message("Category updated")
+                .code(HttpStatus.ACCEPTED.value())
+                .status(HttpStatus.ACCEPTED.getReasonPhrase())
+                .message("Category updated")
                 .build());
     }
 
     @DeleteMapping(
-        path = "/{id}",
-        produces = MediaType.APPLICATION_JSON_VALUE
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<WebResponse> delete(@PathVariable int id) {
         categoryService.delete(id);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(WebResponse.builder()
-                        .code(HttpStatus.ACCEPTED.value())
-                        .status(HttpStatus.ACCEPTED.getReasonPhrase())
-                        .message("Category deleted")
+                .code(HttpStatus.ACCEPTED.value())
+                .status(HttpStatus.ACCEPTED.getReasonPhrase())
+                .message("Category deleted")
                 .build());
     }
 }

@@ -1,5 +1,6 @@
 package com.ran.ams.controller;
 
+import com.ran.ams.dto.PageableDto;
 import com.ran.ams.entity.Location;
 import com.ran.ams.mapper.LocationMapper;
 import com.ran.ams.request.LocationCreateRequest;
@@ -14,9 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Riyan Amanda
@@ -35,7 +33,7 @@ public class LocationController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findAll(
+    public ResponseEntity<WebDataResponse<Object>> findAll(
             @RequestParam(value = "offset", defaultValue = "0") int offset,
             @RequestParam(value = "limit", defaultValue = "10") int limit
     ) {
@@ -45,8 +43,16 @@ public class LocationController {
                 WebDataResponse.builder()
                         .code(HttpStatus.OK.value())
                         .status(HttpStatus.OK.getReasonPhrase())
-                        .data(locations.map(locationMapper))
-                        .build());
+                        .data(PageableDto.builder()
+                                .currentPage(offset)
+                                .perPage(limit)
+                                .isFirst(locations.isFirst())
+                                .isLast(locations.isLast())
+                                .total(locations.getTotalPages())
+                                .content(locations.getContent().stream().map(locationMapper))
+                                .build())
+                        .build()
+        );
     }
 
     @PostMapping(
@@ -68,7 +74,7 @@ public class LocationController {
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findById(@PathVariable int id) {
+    public ResponseEntity<WebDataResponse<Object>> findById(@PathVariable int id) {
         Location location = locationService.findById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(

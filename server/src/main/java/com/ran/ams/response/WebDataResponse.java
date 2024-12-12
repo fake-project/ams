@@ -1,9 +1,7 @@
 package com.ran.ams.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author Riyan Amanda
@@ -12,11 +10,9 @@ import lombok.NoArgsConstructor;
  **/
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class WebDataResponse {
+public class WebDataResponse<T> {
     private int code;
     private String status;
-    private Object data;
+    private T data;
 }
