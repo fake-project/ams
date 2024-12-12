@@ -33,10 +33,12 @@ public class CategoryController {
     private final CategoryMapper categoryMapper;
 
     @GetMapping(
-            path = "/{offset}/{limit}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findAll(@PathVariable int offset, @PathVariable int limit) {
+    public ResponseEntity<WebDataResponse> findAll(
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            @RequestParam(value = "limit", defaultValue = "10") int limit
+    ) {
         Page<Category> categories = categoryService.findAll(offset, limit);
 
         return ResponseEntity.status(HttpStatus.OK).body(

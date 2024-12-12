@@ -33,10 +33,12 @@ public class ConditionController {
     private final ConditionMapper conditionMapper;
 
     @GetMapping(
-            path = "/{offset}/{limit}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WebDataResponse> findAll(@PathVariable int offset, @PathVariable int limit) {
+    public ResponseEntity<WebDataResponse> findAll(
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            @RequestParam(value = "limit", defaultValue = "10") int limit
+    ) {
         Page<Condition> conditions = conditionService.findAll(offset, limit);
 
         return ResponseEntity.status(HttpStatus.OK).body(
