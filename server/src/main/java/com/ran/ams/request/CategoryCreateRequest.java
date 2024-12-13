@@ -2,7 +2,6 @@ package com.ran.ams.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,9 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CategoryCreateRequest {
-    @NotNull(message = "Name is required")
-    @NotBlank(message = "Name is required")
-    @NotEmpty(message = "Name is required")
+
+    @NotBlank
     @Size(min = 2, max = 50)
     private String name;
 }

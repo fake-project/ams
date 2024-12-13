@@ -1,9 +1,11 @@
 package com.ran.ams.service.implement;
 
+import com.ran.ams.entity.Condition;
 import com.ran.ams.entity.Location;
 import com.ran.ams.repository.LocationRepository;
 import com.ran.ams.request.LocationCreateRequest;
 import com.ran.ams.request.LocationUpdateRequest;
+import com.ran.ams.service.ConditionService;
 import com.ran.ams.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
+    private final ConditionService conditionService;
 
     @Override
     public Page<Location> findAll(int offset, int limit) {
@@ -34,6 +37,10 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void create(LocationCreateRequest request) {
+        if (locationRepository.existsByName(request.getName())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Name already exists");
+        }
+
         Location location = new Location();
         location.setName(request.getName());
 
@@ -43,12 +50,13 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Location findById(int id) {
         return locationRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Location not found"));
     }
 
     @Override
     public void update(int id, LocationUpdateRequest request) {
-        Location location = findById(id);
+        Location location = locationRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Location not found"));
 
         location.setName(request.getName());
         locationRepository.save(location);

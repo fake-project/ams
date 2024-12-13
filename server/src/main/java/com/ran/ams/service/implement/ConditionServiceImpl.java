@@ -48,11 +48,8 @@ public class ConditionServiceImpl implements ConditionService {
 
     @Override
     public Condition findById(int id) {
-        if (!conditionRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Condition not found");
-        }
-
-        return conditionRepository.findById(id).orElse(null);
+        return conditionRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
